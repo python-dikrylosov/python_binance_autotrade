@@ -32,10 +32,12 @@ time_hour = str(time.strftime("%H"))
 
 while True:
     time.sleep(0)
+    start_time = time.time()
 
     if time_hour != str(time.strftime("%S")):
         time_hour = str(time.strftime("%H"))
         print(["Час прошел, запускаю программу", time_hour, str(time.strftime("%H"))])
+        min_lovume_btc = 0.00011
         #Курсы валют
         symbol_BTCUSDT = info[11]
         symbol_BTCUSDT_symbol = symbol_BTCUSDT["symbol"]
@@ -524,7 +526,7 @@ while True:
             print(preset_pred_price)
             old_time = time.time() - start_time
             print("Время на расчеты :" + str(old_time))
-            min_lovume_btc = 0.00011
+
 
             time.sleep(5)
 
@@ -802,12 +804,12 @@ while True:
 
             pred_price_a = pred_price[0]
             pred_price_aa = pred_price_a[0]
-            preset_pred_price = round(pred_price_aa, 6)
+            preset_pred_price = round(pred_price_aa,0)
             print(pred_price)
             print(preset_pred_price)
             old_time = time.time() - start_time
             print("Время на расчеты :" + str(old_time))
-            min_lovume_btc = 0.00011
+
 
             time.sleep(5)
 
@@ -815,30 +817,31 @@ while True:
 
             # pred_price = float(symbol_BTCRUB_price) + float(random.randint(-1000,1000))
             #Запуск ордера
-            if preset_pred_price <= float(symbol_BTCRUB_price):
+            if preset_pred_price >= float(symbol_BTCRUB_price):
                 info = client.get_all_tickers()
                 symbol_BTCRUB = info[666]
+                symbol_BTCRUB_price = symbol_BTCRUB["price"]
                 a = float(1)
                 b = float(balance_btc["free"])
                 ab_sum = a * b
                 data_coin = float(ab_sum) - min_lovume_btc
                 print(data_coin)
-                quantity = float(min_lovume_btc / float(symbol_BTCRUB_price))
+                quantity = float(min_lovume_btc)
                 print(quantity)
                 if data_coin <= 0:
                     print([data_coin, a, b])
                     print(ab_sum)
-                    quantity = float(min_lovume_btc / float(symbol_BTCRUB_price))
+                    quantity = float(min_lovume_btc)
                     print(quantity)
                     print("Недостаточно  btc")
                 elif data_coin >= 0:
                     print([data_coin, a, b])
-                    print("\n" + "SELL Покупать btc  " + str(preset_pred_price))
+                    print("\n" + "SELL Продавать btc  " + str(preset_pred_price))
                     print(a)
-                    quantity = float(min_lovume_btc / float(symbol_BTCRUB_price))
+                    quantity = float(min_lovume_btc)
                     quantity_start = round(quantity, 5)
                     print(quantity_start)
-                    order = client.order_limit_buy(symbol='BTCRUB', quantity=quantity_start, price=preset_pred_price)
+                    order = client.order_limit_sell(symbol='BTCRUB', quantity=quantity_start, price=preset_pred_price)
                     print(order)
                     data_safe_file_RUBBTC = open("BTCRUBorder.csv", "a")
                     data_safe_file_RUBBTC.write(str(time.strftime("%Y-%m-%d %H:%M:%S+00:00")))
@@ -862,30 +865,33 @@ while True:
 
 
 
-            elif preset_pred_price >= float(symbol_BTCRUB_price):
+            elif preset_pred_price <= float(symbol_BTCRUB_price):
                 info = client.get_all_tickers()
                 symbol_BTCRUB = info[666]
-                a = float(symbol_BTCRUB_price)
+                min_lovume_rub = min_lovume_btc * float(symbol_BTCRUB_price)
+                print([min_lovume_btc, min_lovume_rub])
+                a = float(1)
                 b = float(balance_RUB["free"])
                 ab_sum = a * b
-                data_coin = float(ab_sum) - min_lovume_btc
+                data_coin = float(ab_sum) - min_lovume_rub
                 print(data_coin)
-                quantity = float(min_lovume_btc / float(symbol_BTCRUB_price))
+                quantity = float(min_lovume_rub / float(symbol_BTCRUB_price))
                 print(quantity)
                 if data_coin <= 0:
                     print([data_coin, a, b])
                     print(ab_sum)
-                    quantity = float(min_lovume_btc / float(symbol_BTCRUB_price))
+                    quantity = float(min_lovume_rub / float(symbol_BTCRUB_price))
                     print(quantity)
                     print("Недостаточно RUB для продажи")
                 elif data_coin >= 0:
                     print([data_coin, a, b])
                     print("\n" + "BUY Покупать за RUB " + str(preset_pred_price))
                     print(a)
-                    quantity = float(min_lovume_btc / float(symbol_BTCRUB_price))
+                    quantity = float(min_lovume_rub / float(symbol_BTCRUB_price))
+                    print(quantity)
                     quantity_start = round(quantity, 5)
                     print(quantity_start)
-                    order = client.order_limit_sell(symbol='BTCRUB', quantity=quantity_start, price=preset_pred_price)
+                    order = client.order_limit_buy(symbol='BTCRUB', quantity=quantity_start, price=preset_pred_price)
                     print(order)
                     data_safe_file_RUBBTC = open("BTCRUBorder.csv", "a")
                     data_safe_file_RUBBTC.write(str(time.strftime("%Y-%m-%d %H:%M:%S+00:00")))
@@ -1089,7 +1095,7 @@ while True:
             print(preset_pred_price)
             old_time = time.time() - start_time
             print("Время на расчеты :" + str(old_time))
-            min_lovume_btc = 0.00011
+
 
             time.sleep(5)
 
@@ -1149,6 +1155,9 @@ while True:
                 info = client.get_all_tickers()
                 symbol_AXSBTC = info[1137]
                 symbol_AXSBTC_price = symbol_AXSBTC["price"]
+
+
+                min_lovume_axs = min_lovume_btc / float(symbol_AXSBTC_price)
                 a = float(symbol_AXSBTC_price)
                 b = float(balance_AXS["free"])
                 ab_sum = a * b
@@ -1200,10 +1209,9 @@ while True:
 
         #Запуск асинхронной программы
         ioloop = asyncio.get_event_loop()
-        tasks = [ioloop.create_task(control_balance_AXS()),ioloop.create_task(start_AXSBTC()),ioloop.create_task(AXSBTCorder()),
-                 ioloop.create_task(control_balance_BTC()),ioloop.create_task(start_BTCRUB()),ioloop.create_task(BTCRUBorder()),
+        tasks = [ioloop.create_task(control_balance_BTC()),ioloop.create_task(control_balance_RUB()),ioloop.create_task(start_BTCRUB()),ioloop.create_task(BTCRUBorder()),
                  ioloop.create_task(control_balance_ETH()),ioloop.create_task(start_ETHBTC()),ioloop.create_task(ETHBTCorder()),
-                 ioloop.create_task(control_balance_RUB())] #
+                 ioloop.create_task(control_balance_AXS()),ioloop.create_task(start_AXSBTC()),ioloop.create_task(AXSBTCorder())] #
         wait_tasks = asyncio.wait(tasks)
         ioloop.run_until_complete(wait_tasks)
 
