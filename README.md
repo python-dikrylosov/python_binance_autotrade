@@ -1232,6 +1232,7 @@ while True:
                  ioloop.create_task(control_balance_RUB())] #
         wait_tasks = asyncio.wait(tasks)
         ioloop.run_until_complete(wait_tasks)
+        ioloop.close()
 
         if cv2.waitKey(1) & 0xFF == ord("q"):
             cv2.destroyAllWindows()
@@ -1242,6 +1243,5 @@ while True:
             time.sleep(1)
             print(["pause", i])
         print(["равно h", time_hour, str(time.strftime("%H"))])
-
-#закрытие асинхронной программы
-ioloop.close()
+        #закрытие асинхронной программы
+        
