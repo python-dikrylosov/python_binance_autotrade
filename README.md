@@ -22,6 +22,11 @@ _______________________________________
 
 2 - Докунтация по api binance  https://python-binance.readthedocs.io/en/latest/
 
+
+<div id="header" align="center">
+  <img src="https://media.giphy.com/media/M9gbBd9nbDrOTu1Mqx/giphy.gif" width="100"/>
+</div>
+
         start_asynhio_BTC_RUB.py
         работа файла
         import time
