@@ -82,7 +82,7 @@ while True:
         balance_RUB = client.get_asset_balance(asset='RUB')
         balance_RUB_asset, balance_RUB_free, balance_RUB_locked = balance_RUB["asset"], float(balance_RUB["free"]), float(balance_RUB["locked"])
         balance_usd_RUB_usd_free_locked_sum = float(balance_RUB["free"]) + float(balance_RUB["locked"])
-        balance_usd_RUB_usd_present = balance_usd_RUB_usd_free_locked_sum * float(symbol_USDTRUB["price"])
+        balance_usd_RUB_usd_present = balance_usd_RUB_usd_free_locked_sum / float(symbol_USDTRUB["price"])
 
         balance_AXS = client.get_asset_balance(asset='AXS')
         balance_AXS_asset, balance_AXS_free, balance_AXS_locked = balance_AXS["asset"], float(balance_AXS["free"]),float(balance_AXS["locked"])
@@ -387,10 +387,8 @@ while True:
             import matplotlib.pyplot as plt
             start_time = time.time()
 
-
-
             data_read_pandas_ETHBTC = pd.read_csv("ETHBTC.csv")
-            # data_read_pandas_ETHBTC = data_read_pandas_ETHBTC.tail(500)
+            data_read_pandas_ETHBTC = data_read_pandas_ETHBTC.tail(2000)
             data_read_pandas_ETHBTC_shape_row, data_read_pandas_ETHBTC_shape_col = data_read_pandas_ETHBTC.shape[0], \
                                                                                    data_read_pandas_ETHBTC.shape[1]
             print(data_read_pandas_ETHBTC.shape)
@@ -656,7 +654,7 @@ while True:
             balance_RUB = client.get_asset_balance(asset='RUB')
             # print(balance_btc["asset"],balance_btc["free"],balance_btc["locked"])
             balance_usd_RUB_usd_free_locked_sum = float(balance_RUB["free"]) + float(balance_RUB["locked"])
-            balance_usd_RUB_usd_present = balance_usd_RUB_usd_free_locked_sum * float(symbol_USDTRUB["price"])
+            balance_usd_RUB_usd_present = balance_usd_RUB_usd_free_locked_sum / float(symbol_USDTRUB["price"])
 
             #Запуск нейронки
             import os
@@ -673,7 +671,7 @@ while True:
 
 
             data_read_pandas_BTCRUB = pd.read_csv("RUB_v_balance.csv")
-            # data_read_pandas_ETHBTC = data_read_pandas_ETHBTC.tail(500)
+            data_read_pandas_BTCRUB = data_read_pandas_BTCRUB.tail(2000)
             data_read_pandas_BTCRUB_shape_row, data_read_pandas_BTCRUB_shape_col = data_read_pandas_BTCRUB.shape[0], \
                                                                                    data_read_pandas_BTCRUB.shape[1]
             print(data_read_pandas_BTCRUB.shape)
@@ -959,7 +957,7 @@ while True:
 
 
             data_read_pandas_AXSBTC = pd.read_csv("AXSBTC.csv")
-            # data_read_pandas_ETHBTC = data_read_pandas_ETHBTC.tail(500)
+            data_read_pandas_AXSBTC = data_read_pandas_AXSBTC.tail(2000)
             data_read_pandas_AXSBTC_shape_row, data_read_pandas_AXSBTC_shape_col = data_read_pandas_AXSBTC.shape[0], \
                                                                                    data_read_pandas_AXSBTC.shape[1]
             print(data_read_pandas_AXSBTC.shape)
@@ -1205,13 +1203,376 @@ while True:
 
             #await asyncio.sleep(1)
         #Запуск обновления окошка картинок
+        async def start_LTCBTC():
+            info = client.get_all_tickers()
+            # Курсы валют
+            symbol_BTCUSDT = info[11]
+            symbol_BTCUSDT_symbol = symbol_BTCUSDT["symbol"]
+            symbol_BTCUSDT_price = symbol_BTCUSDT["price"]
+
+            symbol_LTCBTC = info[1]
+            symbol_LTCBTC_symbol = symbol_LTCBTC["symbol"]
+            symbol_LTCBTC_price = symbol_LTCBTC["price"]
+
+            symbol_LTCUSDT = info[190]
+            symbol_LTCUSDT_symbol = symbol_LTCUSDT["symbol"]
+            symbol_LTCUSDT_price = symbol_LTCUSDT["price"]
+
+            # Балансы валют
+            balance_btc = client.get_asset_balance(asset='BTC')
+            # print(balance_btc["asset"],balance_btc["free"],balance_btc["locked"])
+            balance_btc_asset, balance_btc_free, balance_btc_locked = balance_btc["asset"], float(
+                balance_btc["free"]), float(balance_btc["locked"])
+            balance_usd_btc_usd_free_locked_sum = float(balance_btc["free"]) + float(balance_btc["locked"])
+            balance_usd_btc_usd_present = balance_usd_btc_usd_free_locked_sum * float(symbol_BTCUSDT["price"])
+
+            balance_LTC = client.get_asset_balance(asset='LTC')
+            balance_LTC_asset, balance_LTC_free, balance_LTC_locked = balance_LTC["asset"], float(
+                balance_LTC["free"]), float(balance_LTC["locked"])
+            balance_usd_LTC_usd_free_locked_sum = float(balance_LTC["free"]) + float(balance_LTC["locked"])
+            balance_usd_LTC_usd_present = balance_usd_LTC_usd_free_locked_sum * float(symbol_LTCUSDT["price"])
+
+            data_read_order_LTCBTC = pd.read_csv("LTCBTCorder.csv")
+            data_read_order_LTCBTC_filter_price_LTCBTC = data_read_order_LTCBTC.filter(["price_LTCBTC"])
+            data_read_order_LTCBTC_filter_price_order = data_read_order_LTCBTC.filter(["price_order"])
+            data_read_order_LTCBTC_filter_origQty = data_read_order_LTCBTC.filter(["origQty"])
+
+            figure, LTCBTC = plt.subplots(2, 2)
+            LTCBTC[0, 0].plot(data_read_order_LTCBTC_filter_price_LTCBTC, "green")
+            LTCBTC[0, 0].plot(data_read_order_LTCBTC_filter_price_order, "red")
+            LTCBTC[1, 0].plot(data_read_order_LTCBTC_filter_origQty)
+            plt.savefig("LTCBTC_Filter_order_price.png")
+
+            # img_ETHBTC_Filter_order_price_v = cv2.imread("ETHBTC_Filter_order_price.png")
+            # cv2.imshow("ETHBTC_Filter_order_price", img_ETHBTC_Filter_order_price_v)
+            print(["Открытие картинки order_LTCBTC"])
+
+            # Баланс биткоина
+            LTC_v_balance = [balance_LTC_asset, balance_LTC_free, balance_LTC_locked, balance_usd_LTC_usd_present]
+
+            LTC_v_balance_safe = open("LTCBTC.csv", "a")
+            LTC_v_balance_safe.write(str(time.strftime("%Y-%m-%d %H:%M:%S+00:00")))
+            LTC_v_balance_safe.write(",")
+            LTC_v_balance_safe.write(str(symbol_LTCBTC_price))
+            LTC_v_balance_safe.write(",")
+            LTC_v_balance_safe.write(str(balance_LTC_free))
+            LTC_v_balance_safe.write(",")
+            LTC_v_balance_safe.write(str(balance_LTC_locked))
+            LTC_v_balance_safe.write(",")
+            LTC_v_balance_safe.write(str(balance_usd_LTC_usd_present))
+            LTC_v_balance_safe.write("\n")
+            LTC_v_balance_safe.close()
+
+            # print(BTC_v_balance)
+            # await asyncio.sleep(1)
+            # Фильтр баланса биткоина
+            LTC_read = pd.read_csv("LTCBTC.csv")
+            LTC_filter_balance_free = LTC_read.filter(["balance_LTC_free"])
+            LTC_filter_balance_locked = LTC_read.filter(["balance_LTC_locked"])
+            LTC_filter_balance_LTCBTC = LTC_read.filter(["balance_usd_LTC_usd_present"])
+            LTC_filter_balance_LTCBTC_price = LTC_read.filter(["symbol_LTCBTC_price"])
+
+            # print(BTC_read)
+            # Открытие баланса картинки биткоина
+            for i in range(1):
+                fig, LTC = plt.subplots(2, 2)
+                LTC[0, 0].plot(LTC_filter_balance_free)
+                LTC[0, 1].plot(LTC_filter_balance_locked)
+                LTC[1, 0].plot(LTC_filter_balance_LTCBTC)
+                LTC[1, 1].plot(LTC_filter_balance_LTCBTC_price)
+                plt.savefig("LTC_Filter.png")
+
+            # img_RUB = cv2.imread("RUB_Filter.png")
+            # ("RUB", img_RUB)
+
+            print(["Открытие картинки LTC"])
+
+            # Баланс биткоина
+            BTC_v_balance = [balance_btc_asset, balance_btc_free, balance_btc_locked, balance_usd_btc_usd_present]
+
+            BTC_v_balance_safe = open("BTC_v_balance.csv", "a")
+            BTC_v_balance_safe.write(str(time.strftime("%Y-%m-%d %H:%M:%S+00:00")))
+            BTC_v_balance_safe.write(",")
+            BTC_v_balance_safe.write(str(balance_btc_free))
+            BTC_v_balance_safe.write(",")
+            BTC_v_balance_safe.write(str(balance_btc_locked))
+            BTC_v_balance_safe.write(",")
+            BTC_v_balance_safe.write(str(balance_usd_btc_usd_present))
+            BTC_v_balance_safe.write(",")
+            BTC_v_balance_safe.write(str(symbol_BTCUSDT_price))
+            BTC_v_balance_safe.write("\n")
+            BTC_v_balance_safe.close()
+
+            # print(BTC_v_balance)
+            # await asyncio.sleep(1)
+            # Фильтр баланса биткоина
+            BTC_read = pd.read_csv("BTC_v_balance.csv")
+            BTC_filter_balance_free = BTC_read.filter(["BTC_free"])
+            BTC_filter_balance_locked = BTC_read.filter(["BTC_locked"])
+            BTC_filter_balance_BTCUSDT = BTC_read.filter(["BTC_USDT"])
+            BTC_filter_balance_BTCUSDT_price = BTC_read.filter(["BTCUSDT_price"])
+
+            # print(BTC_read)
+
+            # Запуск нейронки
+            import os
+            import math
+            import numpy as np
+            from sklearn.preprocessing import MinMaxScaler
+            from tensorflow.keras.models import load_model
+            from tensorflow.keras.models import save_model
+            from tensorflow.keras.models import Sequential
+            from tensorflow.keras.layers import Dense, LSTM
+            import matplotlib.pyplot as plt
+
+            start_time = time.time()
+
+            data_read_pandas_LTCBTC = pd.read_csv("LTCBTC.csv")
+            data_read_pandas_LTCBTC = data_read_pandas_LTCBTC.tail(2000)
+            data_read_pandas_LTCBTC_shape_row, data_read_pandas_LTCBTC_shape_col = data_read_pandas_LTCBTC.shape[0], \
+                                                                                   data_read_pandas_LTCBTC.shape[1]
+            print(data_read_pandas_LTCBTC.shape)
+            print([data_read_pandas_LTCBTC_shape_row, data_read_pandas_LTCBTC_shape_col])
+
+            filter_LTCBTC_price = data_read_pandas_LTCBTC.filter(["symbol_LTCBTC_price"])
+
+            print(filter_LTCBTC_price)
+
+            # create dATEFRAME CLOSE
+            data = data_read_pandas_LTCBTC.filter(["symbol_LTCBTC_price"])
+
+            # data_df_pandas_filter = data_df_pandas.filter(["Well"])
+            print(data)
+
+            # convert dataframe
+            dataset = data.values
+
+            # dataset  = data_df_pandas_filter.values
+            print(dataset)
+
+            # get the number rows to train the model
+            training_data_len = math.ceil(len(dataset) * .8)
+            print(training_data_len)
+            # scale the data
+            scaler = MinMaxScaler(feature_range=(0, 1))
+            scaled_data = scaler.fit_transform(dataset)
+            print(scaled_data)
+            plt.plot(scaled_data)
+            plt.savefig("scaled_data_ETHBTC.png")
+
+            # create the training dataset
+            train_data = scaled_data[0:training_data_len, :]
+            # split the data into x_train and y_train data sets
+            x_train = []
+            y_train = []
+            for rar in range(60, len(train_data)):
+                x_train.append(train_data[rar - 60:rar, 0])
+                y_train.append(train_data[rar, 0])
+                if rar <= 61:
+                    print(x_train)
+                    print(y_train)
+                    print()
+            # conver the x_train and y_train to numpy arrays
+            x_train, y_train = np.array(x_train), np.array(y_train)
+            # reshape the data
+            x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1], 1))
+            print(x_train.shape)
+            import tensorflow as tf
+
+            # biuld to LST model
+
+            model = Sequential()
+            model.add(LSTM(50, return_sequences=True, input_shape=(x_train.shape[1], 1)))
+            model.add(LSTM(101, return_sequences=False))
+            model.add(Dense(50))
+            model.add(Dense(25))
+            model.add(Dense(1))
+            # cmopale th emodel
+            model.compile(optimizer='adam', loss='mean_squared_error')
+            # train_the_model
+            model.summary()
+            print("Fit model on training data")
+
+            # Evaluate the model on the test data using `evaluate`
+            print("Evaluate on test data")
+            results = model.evaluate(x_train, y_train, batch_size=1)
+            print("test loss, test acc:", results)
+
+            model = tf.keras.models.load_model(os.path.join("./dnn/", "LTCBTC_model.h5"))
+            model.fit(x_train, y_train, batch_size=1, epochs=1)
+
+            model.save(os.path.join("./dnn/", "LTCBTC_model.h5"))
+            # reconstructed_model = tf.keras.models.load_model(os.path.join("./dnn/", "BTC-RUB_model.h5"))
+
+            # np.testing.assert_allclose(model.predict(x_train), reconstructed_model.predict(x_train))
+            # reconstructed_model.fit(x_train, y_train)
+
+            # create the testing data set
+            # create a new array containing scaled values from index 1713 to 2216
+            test_data = scaled_data[training_data_len - 60:, :]
+            # create the fata sets x_test and y_test
+            x_test = []
+            y_test = dataset[training_data_len:, :]
+            for resr in range(60, len(test_data)):
+                x_test.append(test_data[resr - 60:resr, 0])
+
+            # conert the data to numpy array
+            x_test = np.array(x_test)
+
+            # reshape the data
+            x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1], 1))
+
+            # get the model predicted price values
+            predictions = model.predict(x_test)
+            predictions = scaler.inverse_transform(predictions)
+
+            # get the root squared error (RMSE)
+            rmse = np.sqrt(np.mean(predictions - y_test) ** 2)
+            print(rmse)
+
+            # get the quate
+
+            new_df = data_read_pandas_LTCBTC.filter(["symbol_LTCBTC_price"])
+
+            # get teh last 60 days closing price values and convert the dataframe to an array
+            last_60_days = new_df[-60:].values
+            # scale the data to be values beatwet 0 and 1
+
+            last_60_days_scaled = scaler.transform(last_60_days)
+
+            # creAte an enemy list
+            X_test = []
+            # Append past 60 days
+            X_test.append(last_60_days_scaled)
+
+            # convert the x tesst dataset to numpy
+            X_test = np.array(X_test)
+
+            # Reshape the dataframe
+            X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1], 1))
+            # get predict scaled
+
+            pred_price = model.predict(X_test)
+            # undo the scaling
+            pred_price = scaler.inverse_transform(pred_price)
+            print(pred_price)
+
+            pred_price_a = pred_price[0]
+            pred_price_aa = pred_price_a[0]
+            preset_pred_price = round(pred_price_aa, 6)
+            print(pred_price)
+            print(preset_pred_price)
+            old_time = time.time() - start_time
+            print("Время на расчеты :" + str(old_time))
+
+            time.sleep(5)
+
+            # pred_price = float(symbol_BTCRUB_price) + float(random.randint(-1000,1000))
+            # Запуск ордера
+            if preset_pred_price <= float(symbol_LTCBTC_price):
+                info = client.get_all_tickers()
+                symbol_LTCBTC = info[1]
+                symbol_LTCBTC_price = symbol_LTCBTC["price"]
+                a = float(1)
+                b = float(balance_btc["free"])
+                ab_sum = a * b
+                data_coin = float(ab_sum) - min_lovume_btc
+                print(data_coin)
+                quantity = float(min_lovume_btc / float(symbol_LTCBTC_price))
+                print(quantity)
+                if data_coin <= 0:
+                    print([data_coin, a, b])
+                    print(ab_sum)
+                    quantity = float(min_lovume_btc / float(symbol_LTCBTC_price))
+                    print(quantity)
+                    print("Недостаточно  btc")
+                elif data_coin >= 0:
+                    print([data_coin, a, b])
+                    print("\n" + "BUY Покупать btc  " + str(preset_pred_price))
+                    print(a)
+                    quantity = float(min_lovume_btc / float(symbol_LTCBTC_price))
+                    quantity_start = round(quantity, 3)
+                    print(quantity_start)
+                    order = client.order_limit_buy(symbol='LTCBTC', quantity=quantity_start,
+                                                   price=preset_pred_price)
+                    print(order)
+                    data_safe_file_LTCBTC = open("LTCBTCorder.csv", "a")
+                    data_safe_file_LTCBTC.write(str(time.strftime("%Y-%m-%d %H:%M:%S+00:00")))
+                    data_safe_file_LTCBTC.write(",")
+                    data_safe_file_LTCBTC.write(str(symbol_LTCBTC_price))
+                    data_safe_file_LTCBTC.write(",")
+                    data_safe_file_LTCBTC.write(str(order['symbol']))
+                    data_safe_file_LTCBTC.write(",")
+                    data_safe_file_LTCBTC.write(str(order['orderId']))
+                    data_safe_file_LTCBTC.write(",")
+                    data_safe_file_LTCBTC.write(str(order['transactTime']))
+                    data_safe_file_LTCBTC.write(",")
+                    data_safe_file_LTCBTC.write(str(order['price']))
+                    data_safe_file_LTCBTC.write(",")
+                    data_safe_file_LTCBTC.write(str(order['origQty']))
+                    data_safe_file_LTCBTC.write(",")
+                    data_safe_file_LTCBTC.write(str(order['side']))
+                    data_safe_file_LTCBTC.write(",")
+                    data_safe_file_LTCBTC.write("\n")
+                    data_safe_file_LTCBTC.close()
+
+
+
+            elif preset_pred_price >= float(symbol_LTCBTC_price):
+                info = client.get_all_tickers()
+                symbol_LTCBTC = info[1]
+                symbol_LTCBTC_price = symbol_LTCBTC["price"]
+                a = float(symbol_LTCBTC_price)
+                b = float(balance_LTC["free"])
+                ab_sum = a * b
+                data_coin = float(ab_sum) - min_lovume_btc
+                print(data_coin)
+                quantity = float(min_lovume_btc / float(symbol_LTCBTC_price))
+                print(quantity)
+                if data_coin <= 0:
+                    print([data_coin, a, b])
+                    print(ab_sum)
+                    quantity = float(min_lovume_btc / float(symbol_LTCBTC_price))
+                    print(quantity)
+                    print("Недостаточно LTC для продажи")
+                elif data_coin >= 0:
+                    print([data_coin, a, b])
+                    print("\n" + "BUY Покупать за LTC " + str(preset_pred_price))
+                    print(a)
+                    quantity = float(min_lovume_btc / float(symbol_LTCBTC_price))
+                    quantity_start = round(quantity, 3)
+                    print(quantity_start)
+                    order = client.order_limit_sell(symbol='LTCBTC', quantity=quantity_start,
+                                                    price=preset_pred_price)
+                    print(order)
+                    data_safe_file_LTCBTC = open("LTCBTCorder.csv", "a")
+                    data_safe_file_LTCBTC.write(str(time.strftime("%Y-%m-%d %H:%M:%S+00:00")))
+                    data_safe_file_LTCBTC.write(",")
+                    data_safe_file_LTCBTC.write(str(symbol_LTCBTC_price))
+                    data_safe_file_LTCBTC.write(",")
+                    data_safe_file_LTCBTC.write(str(order['symbol']))
+                    data_safe_file_LTCBTC.write(",")
+                    data_safe_file_LTCBTC.write(str(order['orderId']))
+                    data_safe_file_LTCBTC.write(",")
+                    data_safe_file_LTCBTC.write(str(order['transactTime']))
+                    data_safe_file_LTCBTC.write(",")
+                    data_safe_file_LTCBTC.write(str(order['price']))
+                    data_safe_file_LTCBTC.write(",")
+                    data_safe_file_LTCBTC.write(str(order['origQty']))
+                    data_safe_file_LTCBTC.write(",")
+                    data_safe_file_LTCBTC.write(str(order['side']))
+                    data_safe_file_LTCBTC.write(",")
+                    data_safe_file_LTCBTC.write("\n")
+                    data_safe_file_LTCBTC.close()
+
 
 
         #Запуск асинхронной программы
         ioloop = asyncio.get_event_loop()
         tasks = [ioloop.create_task(control_balance_BTC()),ioloop.create_task(control_balance_RUB()),ioloop.create_task(start_BTCRUB()),ioloop.create_task(BTCRUBorder()),
                  ioloop.create_task(control_balance_ETH()),ioloop.create_task(start_ETHBTC()),ioloop.create_task(ETHBTCorder()),
-                 ioloop.create_task(control_balance_AXS()),ioloop.create_task(start_AXSBTC()),ioloop.create_task(AXSBTCorder())] #
+                 ioloop.create_task(control_balance_AXS()),ioloop.create_task(start_AXSBTC()),ioloop.create_task(AXSBTCorder()),
+                 ioloop.create_task(start_LTCBTC())] #
         wait_tasks = asyncio.wait(tasks)
         ioloop.run_until_complete(wait_tasks)
 
