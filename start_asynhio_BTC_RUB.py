@@ -1,8 +1,5 @@
 import password
-import telebot
-bot = telebot.TeleBot(password.telegram_TOKEN_binancepredictionbalanceallbot)
-BOT_TOKEN = password.telegram_TOKEN_binancepredictionbalanceallbot
-CHANNEL_NAME = '@python_binance_autotrade'
+
 
 import time
 import asyncio
@@ -651,9 +648,7 @@ while True:
                     data_safe_file_ETHBTC.write("\n")
                     data_safe_file_ETHBTC.close()
 
-            if order != None:
-                order_group_ETHBTC = order['symbol'] + " _ " + order['side'] + " _ " +  order['price'] + " _ " +  order['origQty']
-                bot.send_message(CHANNEL_NAME, order_group_ETHBTC)
+
 
             #await asyncio.sleep(1)
 
@@ -940,9 +935,7 @@ while True:
                     data_safe_file_RUBBTC.write(",")
                     data_safe_file_RUBBTC.write("\n")
                     data_safe_file_RUBBTC.close()
-            if order != None:
-                order_group_RUBBTC = order['symbol'] + " _ " +  order['side'] + " _ " +  order['price'] + " _ " +  order['origQty']
-                bot.send_message(CHANNEL_NAME, order_group_RUBBTC)
+
             #await asyncio.sleep(1)
 
             #await asyncio.sleep(1)
@@ -1228,9 +1221,7 @@ while True:
                     data_safe_file_AXSBTC.write(",")
                     data_safe_file_AXSBTC.write("\n")
                     data_safe_file_AXSBTC.close()
-            if order != None:
-                order_group_AXSBTC = order['symbol'] + " _ " +  order['side'] + " _ " +  order['price'] + " _ " +  order['origQty']
-                bot.send_message(CHANNEL_NAME, order_group_AXSBTC)
+
             #await asyncio.sleep(1)
 
             #await asyncio.sleep(1)
@@ -1598,9 +1589,7 @@ while True:
                     data_safe_file_LTCBTC.write("\n")
                     data_safe_file_LTCBTC.close()
 
-            if order != None:
-                order_group_LTCBTC = order['symbol'] + " _ " + order['side'] + " _ " + order['price'] + " _ " + order['origQty']
-                bot.send_message(CHANNEL_NAME, order_group_LTCBTC)
+
 
         async def start_BNBBTC():
                 import matplotlib.pyplot as plt
@@ -1967,9 +1956,7 @@ while True:
                         data_safe_file_BNBBTC.write("\n")
                         data_safe_file_BNBBTC.close()
 
-                if order != None:
-                    order_group_BNBBTC = order['symbol'] + " _ " + order['side'] + " _ " + order['price'] + " _ " + order['origQty']
-                    bot.send_message(CHANNEL_NAME, order_group_BNBBTC)
+
 
 
 
