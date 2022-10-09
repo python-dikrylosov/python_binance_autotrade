@@ -1,5 +1,8 @@
 import password
-
+import telebot
+bot = telebot.TeleBot(password.telegram_TOKEN_binancepredictionbalanceallbot)
+BOT_TOKEN = password.telegram_TOKEN_binancepredictionbalanceallbot
+CHANNEL_NAME = '@python_binance_autotrade'
 
 import time
 import asyncio
@@ -40,7 +43,7 @@ while True:
     if time_hour != str(time.strftime("%H")):
         time_hour = str(time.strftime("%H"))
         print(["Час прошел, запускаю программу", time_hour, str(time.strftime("%H"))])
-        min_lovume_btc = 0.00011
+        min_lovume_btc = 0.0002
         #Курсы валют
         symbol_BTCUSDT = info[11]
         symbol_BTCUSDT_symbol = symbol_BTCUSDT["symbol"]
@@ -199,7 +202,7 @@ while True:
             #("RUB", img_RUB)
 
             print(["Открытие картинки RUB"])
-            await asyncio.sleep(0)
+            #await asyncio.sleep(0)
 
 
         async def control_balance_BTC():
@@ -246,7 +249,7 @@ while True:
             #cv2.imshow("BTC", img_BTC)
 
             print(["Открытие картинки BTC"])
-            await asyncio.sleep(0)
+            #await asyncio.sleep(0)
 
 
         async def control_balance_AXS():
@@ -307,11 +310,11 @@ while True:
             #img_AXSBTC = cv2.imread("AXSBTC_Filter.png")
             #cv2.imshow("AXSBTC", img_AXSBTC)
             print(["Открытие картинки AXSBTC"])
-            await asyncio.sleep(0)
+            #await asyncio.sleep(0)
 
         async def start_ETHBTC():
             import matplotlib.pyplot as plt
-            #Курс валюты ETHBTC
+            # Курс валюты ETHBTC
             info = client.get_all_tickers()
             symbol_ETHBTC = info[0]
             symbol_ETHBTC_symbol = symbol_ETHBTC["symbol"]
@@ -323,20 +326,21 @@ while True:
             balance_usd_btc_usd_present = balance_usd_btc_usd_free_locked_sum * float(symbol_BTCUSDT["price"])
 
             balance_ETH = client.get_asset_balance(asset='ETH')
+            balance_ETH_asset = balance_ETH["asset"]
+            balance_ETH_free = balance_ETH["free"]
+            balance_ETH_locked = balance_ETH["locked"]
             # print(balance_btc["asset"],balance_btc["free"],balance_btc["locked"])
             balance_usd_ETH_usd_free_locked_sum = float(balance_ETH["free"]) + float(balance_ETH["locked"])
             balance_usd_ETH_usd_present = balance_usd_ETH_usd_free_locked_sum * float(symbol_ETHUSDT["price"])
 
             # Сохранение и отрытие фильтрации ордеров в картинки
             data_read_order_ETHBTC = pd.read_csv("ETHBTCorder.csv")
-            data_read_order_ETHBTC_filter_price_ETHBTC = data_read_order_ETHBTC.filter(["price_ETHBTC"])
+            data_read_order_ETHBTC_filter_price_ETHBTC = data_read_order_ETHBTC.filter(["symbol_ETHBTC"])
             data_read_order_ETHBTC_filter_price_order = data_read_order_ETHBTC.filter(["price_order"])
-            data_read_order_ETHBTC_filter_origQty = data_read_order_ETHBTC.filter(["origQty"])
 
             data_read_order_BTCRUB = pd.read_csv("BTCRUBorder.csv")
             data_read_order_BTCRUB_filter_price_BTCRUB = data_read_order_BTCRUB.filter(["price_BTCRUB"])
             data_read_order_BTCRUB_filter_price_order = data_read_order_BTCRUB.filter(["price_order"])
-            data_read_order_BTCRUB_filter_origQty = data_read_order_BTCRUB.filter(["origQty"])
 
             figure, ETHBTC = plt.subplots(2, 2)
 
@@ -344,7 +348,6 @@ while True:
             ETHBTC[0, 0].plot(data_read_order_ETHBTC_filter_price_order, "red")
             ETHBTC[0, 1].plot(data_read_order_BTCRUB_filter_price_BTCRUB, "green")
             ETHBTC[0, 1].plot(data_read_order_BTCRUB_filter_price_order, "red")
-            ETHBTC[1, 0].bar(data_read_order_ETHBTC_filter_origQty)
 
             plt.savefig("ETHBTC_Filter_order_price.png")
 
@@ -377,7 +380,7 @@ while True:
             ETH_filter_balance_free = ETH_read.filter(["ETH_free"])
             ETH_filter_balance_locked = ETH_read.filter(["ETH_locked"])
             ETH_filter_balance_ETHUSDT = ETH_read.filter(["ETH_USDT"])
-            ETH_filter_balance_price_ETHBTC = ETH_read.filter(["price_ETHBTC"])
+            ETH_filter_balance_price_ETHBTC = ETH_read.filter(["symbol_ETHBTC_price"])
             ETH_filter_balance_ETHUSDT_price = ETH_read.filter(["price_ETHUSDT"])
 
             # print(ETH_read)
@@ -398,8 +401,7 @@ while True:
             print(["Открытие картинки ETH"])
             # await asyncio.sleep(0)
 
-
-            #Запуск нейронки
+            # Запуск нейронки
             import os
             import math
             import numpy as np
@@ -418,12 +420,12 @@ while True:
             print(data_read_pandas_ETHBTC.shape)
             print([data_read_pandas_ETHBTC_shape_row, data_read_pandas_ETHBTC_shape_col])
 
-            filter_ETHBTC_price = data_read_pandas_ETHBTC.filter(["price_ETHBTC"])
+            filter_ETHBTC_price = data_read_pandas_ETHBTC.filter(["symbol_ETHBTC_price"])
 
             print(filter_ETHBTC_price)
 
             # create dATEFRAME CLOSE
-            data = data_read_pandas_ETHBTC.filter(["price_ETHBTC"])
+            data = data_read_pandas_ETHBTC.filter(["symbol_ETHBTC_price"])
 
             # data_df_pandas_filter = data_df_pandas.filter(["Well"])
             print(data)
@@ -441,8 +443,8 @@ while True:
             scaler = MinMaxScaler(feature_range=(0, 1))
             scaled_data = scaler.fit_transform(dataset)
             print(scaled_data)
-            #plt.plot(scaled_data)
-            #plt.savefig("scaled_data_ETHBTC.png")
+            # plt.plot(scaled_data)
+            # plt.savefig("scaled_data_ETHBTC.png")
 
             # create the training dataset
             train_data = scaled_data[0:training_data_len, :]
@@ -516,7 +518,7 @@ while True:
 
             # get the quate
 
-            new_df = data_read_pandas_ETHBTC.filter(["price_ETHBTC"])
+            new_df = data_read_pandas_ETHBTC.filter(["symbol_ETHBTC_price"])
 
             # get teh last 60 days closing price values and convert the dataframe to an array
             last_60_days = new_df[-60:].values
@@ -549,13 +551,10 @@ while True:
             old_time = time.time() - start_time
             print("Время на расчеты :" + str(old_time))
 
-
             time.sleep(5)
 
-
-
             # pred_price = float(symbol_BTCRUB_price) + float(random.randint(-1000,1000))
-            #Запуск ордера
+            # Запуск ордера
             if preset_pred_price <= float(symbol_ETHBTC_price):
                 info = client.get_all_tickers()
                 symbol_ETHBTC = info[0]
@@ -648,12 +647,10 @@ while True:
                     data_safe_file_ETHBTC.write("\n")
                     data_safe_file_ETHBTC.close()
 
+            if order != None:
+                order_group_ETHBTC = "Z: " + order['symbol'] + " _ " + order['side'] + " _ " + order['price'] + " _ " + order['origQty']
+                bot.send_message(CHANNEL_NAME, order_group_ETHBTC)
 
-
-            #await asyncio.sleep(1)
-
-            #await asyncio.sleep(1)
-        #Запуск обновления окошка картинок
 
         async def start_BTCRUB():
             #Курс валюты ETHBTC
@@ -935,7 +932,9 @@ while True:
                     data_safe_file_RUBBTC.write(",")
                     data_safe_file_RUBBTC.write("\n")
                     data_safe_file_RUBBTC.close()
-
+            if order != None:
+                order_group_RUBBTC = "Z: " + order['symbol'] + " _ " +  order['side'] + " _ " +  order['price'] + " _ " +  order['origQty']
+                bot.send_message(CHANNEL_NAME, order_group_RUBBTC)
             #await asyncio.sleep(1)
 
             #await asyncio.sleep(1)
@@ -1221,7 +1220,9 @@ while True:
                     data_safe_file_AXSBTC.write(",")
                     data_safe_file_AXSBTC.write("\n")
                     data_safe_file_AXSBTC.close()
-
+            if order != None:
+                order_group_AXSBTC = "Z: " + order['symbol'] + " _ " +  order['side'] + " _ " +  order['price'] + " _ " +  order['origQty']
+                bot.send_message(CHANNEL_NAME, order_group_AXSBTC)
             #await asyncio.sleep(1)
 
             #await asyncio.sleep(1)
@@ -1589,7 +1590,9 @@ while True:
                     data_safe_file_LTCBTC.write("\n")
                     data_safe_file_LTCBTC.close()
 
-
+            if order != None:
+                order_group_LTCBTC = "Z: " + order['symbol'] + " _ " + order['side'] + " _ " + order['price'] + " _ " + order['origQty']
+                bot.send_message(CHANNEL_NAME, order_group_LTCBTC)
 
         async def start_BNBBTC():
                 import matplotlib.pyplot as plt
@@ -1956,7 +1959,10 @@ while True:
                         data_safe_file_BNBBTC.write("\n")
                         data_safe_file_BNBBTC.close()
 
+                if order != None:
 
+                    order_group_BNBBTC = "Z: " + order['symbol'] + " _ " + order['side'] + " _ " + order['price'] + " _ " + order['origQty']
+                    bot.send_message(CHANNEL_NAME, order_group_BNBBTC)
 
 
 
@@ -1965,9 +1971,9 @@ while True:
         tasks = [ioloop.create_task(start_ETHBTC()),
                  ioloop.create_task(start_LTCBTC()),
                  ioloop.create_task(start_BNBBTC()),
+
                  ioloop.create_task(control_balance_BTC()),ioloop.create_task(control_balance_RUB()),ioloop.create_task(start_BTCRUB()),ioloop.create_task(BTCRUBorder()),
-                 ioloop.create_task(control_balance_AXS()),ioloop.create_task(start_AXSBTC()),ioloop.create_task(AXSBTCorder())
-                 ] #
+                 ioloop.create_task(control_balance_AXS()),ioloop.create_task(start_AXSBTC()),ioloop.create_task(AXSBTCorder())] #
         wait_tasks = asyncio.wait(tasks)
         ioloop.run_until_complete(wait_tasks)
 
@@ -1981,6 +1987,8 @@ while True:
             time.sleep(1)
             print(["pause", i])
         print(["равно h", time_hour, str(time.strftime("%H:%M:%S"))])
+
+
 
 #закрытие асинхронной программы
 ioloop.close()
